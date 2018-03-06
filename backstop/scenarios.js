@@ -1,9 +1,20 @@
-const DOMAIN = process.env.DOMAIN || 'localhost:8000';
+const DOMAIN = process.env.DOMAIN || 'localhost';
 
 const composeScenario = (...args) => Object.assign({}, ...args);
 const contentOnly = composeScenario.bind(null, {
     selectors: ['.content-wrapper'],
 });
+
+// env or config file?
+const PAGE_IDS = [
+    1, 11, 7, 10,
+    258, 486, 528, 498,
+    12, 490, 339, 546,
+    115, 237, 541, 3, 
+    405, 200, 4, 477,
+    177, 5, 542, 288,
+    287, 544
+]
 
 const generateLabels = (scenario, index) => {
     let fullLabel = scenario.path;
@@ -33,7 +44,9 @@ const generateLabels = (scenario, index) => {
     };
 };
 
+
 const generateScenario = (scenario, index) => {
+
     return Object.assign(
         {
             url: `http://${DOMAIN}/admin${scenario.path}`,
@@ -52,8 +65,6 @@ const generateScenario = (scenario, index) => {
         scenario,
     );
 };
-
-const PAGE_ID = 60;
 
 const empty = [
     { label: 'Empty 1', path: '/empty', selectors: ['.page404__button'] },
@@ -106,185 +117,157 @@ const nav = [
     },
 ];
 
-const pages = [
-    contentOnly({ path: '/pages/' }),
-    contentOnly({ path: '/pages/search/?q=bread' }),
-    contentOnly({ path: '/pages/search/?q=test123456' }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/`,
-        clickSelector: '.index [data-dropdown]',
-    }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/`,
-        // TODO Privacy type select not working.
-        // clickSelector: ['.action-set-privacy', '[for="id_restriction_type_2"]'],
-        clickSelector: ['.action-set-privacy'],
-    }),
-    contentOnly({ path: `/pages/${PAGE_ID}/?ordering=ord` }),
-    contentOnly({ path: `/pages/${PAGE_ID}/edit/` }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        clickSelector: '.action-set-privacy',
-    }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        clickSelector: '#id_image-chooser li:nth-child(2) button',
-        onReadySelector: '.images.chooser',
-        hideSelectors: ['.show-transparency'],
-    }),
-    // TODO Does not seem to work for the second selector?
-    // contentOnly({
-    //     path: `/pages/${PAGE_ID}/edit/`,
-    //     clickSelector: [
-    //         '#id_image-chooser li:nth-child(2) button',
-    //         '[href="#upload"]',
-    //     ],
-    // }),
-    // contentOnly({
-    //     path: `/pages/${PAGE_ID}/edit/`,
-    //     clickSelector: '#id_hero_cta_link-chooser li:nth-child(2) button',
-    //     onReadySelector: '.page-results',
-    // }),
-    // TODO Does not seem to work for the second selector?
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        clickSelector: [
-            '#id_hero_cta_link-chooser li:nth-child(2) button',
-            '[href="/admin/choose-page/3/?page_type=wagtailcore.page"]',
-        ],
-        onReadySelector: '.page-results',
-    }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        clickSelector: ['.action-clear', '.dropdown-toggle'],
-    }),
-    contentOnly({ path: `/pages/${PAGE_ID}/revisions/` }),
-    contentOnly({ path: `/pages/${PAGE_ID}/unpublish/` }),
-    contentOnly({ path: `/pages/${PAGE_ID}/delete/` }),
-    contentOnly({ path: `/pages/${PAGE_ID}/copy/` }),
-    contentOnly({ path: `/pages/${PAGE_ID}/add_subpage/` }),
-    contentOnly({ path: `/pages/add/base/homepage/60/` }),
-    contentOnly({
-        path: `/pages/add/base/homepage/60/`,
-        clickSelector: '[href="#tab-promote"]',
-    }),
-    contentOnly({
-        path: `/pages/add/base/homepage/60/`,
-        // TODO Point to a specific, stable date.
-        // clickSelector: ['[href="#tab-settings"]', '[for="id_go_live_at"]'],
-        clickSelector: ['[href="#tab-settings"]'],
-    }),
-    contentOnly({ path: `/pages/69/move/60/` }),
-    // TODO Test lock
-];
+function flatten(arr) {
+    return Array.prototype.concat(...arr);
+}
 
-const richtext = [
-    {
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="h2"]',
-        selectors: ['.hallo_rich_text_area'],
-    },
-    {
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="OL"]',
-        selectors: ['.hallo_rich_text_area'],
-    },
-    {
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="UL"]',
-        selectors: ['.hallo_rich_text_area'],
-    },
-    {
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="Horizontal rule"]',
-        selectors: ['.hallo_rich_text_area'],
-    },
-    {
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: ['[title="Horizontal rule"]', '[title="Undo"]'],
-        selectors: ['.hallo_rich_text_area'],
-    },
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="Embed"]',
-        onReadySelector: '[action="/admin/embeds/chooser/upload/"]',
-    }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="Documents"]',
-        onReadySelector: '[action="/admin/documents/chooser/"]',
-    }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="Images"]',
-        onReadySelector: '[action="/admin/images/chooser/?select_format=true"]',
-        hideSelectors: ['.show-transparency'],
-    }),
-    contentOnly({
-        path: `/pages/${PAGE_ID}/edit/`,
-        typeSelector: '[for="id_promo_text"] + div .richtext',
-        clickSelector: '[title="Add/Edit Link"]',
-        onReadySelector: '.page-results',
-    }),
-    // TODO Investigate.
-    // {
-    //     label: 'Hallo.js - External link chooser',
-    //     path: `/pages/${PAGE_ID}/edit/`,
-    //     typeSelector: '[for="id_promo_text"] + div .richtext',
-    //     clickSelector: [
-    //         '[title="Add/Edit Link"]',
-    //         '[href*="/admin/choose-external-link/"]',
-    //     ],
-    // },
-    // {
-    //     path: `/pages/${PAGE_ID}/edit/`,
-    //     typeSelector: '[for="id_promo_text"] + div .richtext',
-    //     clickSelector: [
-    //         '[title="Add/Edit Link"]',
-    //         '[href*="/admin/choose-email-link/"]',
-    //     ],
-    // },
-];
+const generatePages = () => {
+    let pages = [
+        contentOnly({ path: '/pages/' }),
+        contentOnly({ path: '/pages/search/?q=club' }),
+        contentOnly({ path: '/pages/search/?q=12345' }),
+    ]
 
-const streamfield = [
-    {
-        label: 'Streamfield - All blocks',
-        path: `/pages/${PAGE_ID}/edit/`,
-        clickSelector: [
-            '#body-0-appendmenu .toggle',
-            '#body-0-appendmenu .action-add-block-heading_block',
-            '#body-0-appendmenu .toggle',
-            '#body-0-appendmenu .action-add-block-image_block',
-            '#body-0-appendmenu .toggle',
-            '#body-0-appendmenu .action-add-block-block_quote',
-            '#body-0-appendmenu .toggle',
-            '#body-0-appendmenu .action-add-block-embed_block',
-        ],
-        selectors: ['.stream-field'],
-    },
-    {
-        label: 'Streamfield - Move blocks',
-        path: `/pages/${PAGE_ID}/edit/`,
-        clickSelector: [
-            '#body-0-appendmenu .toggle',
-            '#body-0-appendmenu .action-add-block-heading_block',
-            '#body-0-appendmenu .toggle',
-            '#body-0-appendmenu .action-add-block-image_block',
-            '#body-0-movedown',
-            // TODO Investigate.
-            '#body-9-delete',
-        ],
-        selectors: ['.stream-field'],
-    },
-];
+    PAGE_IDS.forEach(function (pageID) {
+        let page = [
+            {
+                path: `/pages/${pageID}/`,
+            },
+            {
+                path: `/pages/${pageID}/edit/`,
+            },
+            contentOnly({ path: `/pages/${pageID}/?ordering=ord` }),
+            contentOnly({ path: `/pages/${pageID}/revisions/` }),
+            contentOnly({ path: `/pages/${pageID}/unpublish/` }),
+            contentOnly({ path: `/pages/${pageID}/delete/` }),
+            contentOnly({ path: `/pages/${pageID}/copy/` }),
+            contentOnly({ path: `/pages/${pageID}/add_subpage/` }),
+        ]
+        pages.push(page);
+    });
+
+    pages = flatten(pages);
+
+    return {
+        pages,
+    };
+}
+
+const generateRichText = () => {
+    let richtext = []
+
+    PAGE_IDS.forEach(function(pageID) {
+        let pageRichText = [
+            {
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="header_two"]',
+                selectors: ['.widget-draftail_rich_text_area'],
+            },
+            {
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="ordered-list-item"]',
+                selectors: ['.widget-draftail_rich_text_area'],
+            },
+            {
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="unordered-list-item"]',
+                selectors: ['.widget-draftail_rich_text_area'],
+            },
+            {
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="HORIZONTAL_RULE"]',
+                selectors: ['.widget-draftail_rich_text_area'],
+            },
+            {
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: ['[name="HORIZONTAL_RULE"]', '[name="undo"]'],
+                selectors: ['.widget-draftail_rich_text_area'],
+            },
+            contentOnly({
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="EMBED"]',
+                onReadySelector: '[action="/admin/embeds/chooser/upload/"]',
+            }),
+            contentOnly({
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="DOCUMENT"]',
+                onReadySelector: '[action="/admin/documents/chooser/"]',
+            }),
+            contentOnly({
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="IMAGE"]',
+                onReadySelector: '[action="/admin/images/chooser/?select_format=true"]',
+                hideSelectors: ['.show-transparency'],
+            }),
+            contentOnly({
+                path: `/pages/${pageID}/edit/`,
+                typeSelector: '[for="id_content"] + div .richtext',
+                clickSelector: '[name="LINK"]',
+                onReadySelector: '.page-results',
+            }),
+        ]
+
+        richtext.push(pageRichText);
+    });
+
+    richtext = flatten(richtext);
+
+    return {
+        richtext,
+    };
+};
+
+const generateStreamfields = () => {
+    let streamfields = []
+
+    PAGE_IDS.forEach(function (pageID) {
+        const pageStreamField = [
+        {
+            label: `Streamfield - All blocks page ${pageID}`,
+            path: `/pages/${pageID}/edit/`,
+            clickSelector: [
+                '#body-0-appendmenu .toggle',
+                '#body-0-appendmenu .action-add-block-heading_block',
+                '#body-0-appendmenu .toggle',
+                '#body-0-appendmenu .action-add-block-image_block',
+                '#body-0-appendmenu .toggle',
+                '#body-0-appendmenu .action-add-block-block_quote',
+                '#body-0-appendmenu .toggle',
+                '#body-0-appendmenu .action-add-block-embed_block',
+            ],
+            selectors: ['.stream-field'],
+        },
+        {
+            label: `Streamfield - Move blocks page ${pageID}`,
+            path: `/pages/${pageID}/edit/`,
+            clickSelector: [
+                '#body-0-appendmenu .toggle',
+                '#body-0-appendmenu .action-add-block-heading_block',
+                '#body-0-appendmenu .toggle',
+                '#body-0-appendmenu .action-add-block-image_block',
+                '#body-0-movedown',
+                '#body-9-delete',
+            ],
+            selectors: ['.stream-field'],
+        },
+    ];
+        streamfields.push(pageStreamField);
+    });
+
+    streamfields = flatten(streamfields);
+
+    return {
+        streamfields,
+    };
+}
 
 const modeladmin = [
     contentOnly({ path: '/base/people/' }),
@@ -408,20 +391,28 @@ const account = [
     { path: '/password_reset/' },
 ];
 
+const allPages = generatePages()['pages'];
+const allRichText = generateRichText()['richtext'];
+const allStreamFields = generateStreamfields()['streamfields'];
+
 const scenarios = [
     ...empty,
+    ...allPages,
     ...base,
     ...nav,
-    ...pages,
-    ...richtext,
-    ...streamfield,
-    ...modeladmin,
     ...images,
     ...documents,
-    ...snippets,
     ...forms,
     ...settings,
     ...account,
 ];
+
+// These can be moved into scenarios as seen fit
+const otherScenarios = [
+    ...allRichText,
+    ...allStreamFields,
+    ...modeladmin,
+    ...snippets,
+]
 
 module.exports = scenarios.map(generateScenario);

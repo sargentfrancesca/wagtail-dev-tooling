@@ -10,7 +10,9 @@
   "eslintConfig": {
     "extends": "plugin:springload/prettier"
   },
-  "dependencies": {},
+  "dependencies": {
+    "locus": "^2.0.1"
+  },
   "devDependencies": {
     "backstopjs": "^3.0.32",
     "dotenv": "^4.0.0",
@@ -23,6 +25,7 @@
     "backstop": "backstop --config=backstop/config.js",
     "sitespeed": "sitespeed.io --config sitespeedio.json",
     "regression:test": "npm run backstop -s -- test",
+    "regression:reference": "npm run backstop -s -- reference",
     "regression:approve": "npm run backstop -s -- approve",
     "regression:open": "npm run backstop -s -- openReport",
     "performance:test": "npm run sitespeed -s -- sitespeed-urls.txt",

@@ -28,7 +28,7 @@ const FILTER = null; // /.*rich.*/;
 module.exports = {
     debug: false,
     debugWindow: false,
-    id: 'bakerydemo',
+    id: 'wagtail',
     viewports: viewports,
     scenarios: FILTER
         ? scenarios.filter(s => s.label.match(FILTER))
